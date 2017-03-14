@@ -32,14 +32,14 @@ public class CountWords {
      * @return - целое число - сумма всех чисел из файла
      */
     public long countNumbers(File file) throws Exception {
-        Scanner s = new Scanner(file);
+        Scanner scan = new Scanner(file);
         int count = 0;
-        while (s.hasNext()) {
-            if (s.hasNextInt()) {
-                count += s.nextInt();
-                s.nextLine();
+        while (scan.hasNext()) {
+            if (scan.hasNextInt()) {
+                count += scan.nextInt();
+                scan.nextLine();
             } else {
-                s.nextLine();
+                scan.nextLine();
             }
         }
         return count;
@@ -54,19 +54,19 @@ public class CountWords {
      * @return - результирующая строка
      */
     public String concatWords(File file) throws Exception {
-        Scanner s = new Scanner(file);
-        String str = "";
-        while (s.hasNext()) {
-            if (s.hasNextInt()) {
-                s.nextLine();
+        Scanner scan = new Scanner(file);
+        StringBuilder strbld = new StringBuilder();
+        while (scan.hasNext()) {
+            if (scan.hasNextInt()) {
+                scan.nextLine();
             } else {
-                String next = s.nextLine();
-                if (!next.equals(""))
-                    str += next + " ";
+                String next = scan.nextLine();
+                if (!next.equals("")) {
+                    strbld.append(next + " ");
+                }
             }
         }
-        str = str.trim();
-        return str;
+        return strbld.toString().trim();
     }
 
 }
