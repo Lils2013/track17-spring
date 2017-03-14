@@ -33,7 +33,7 @@ public class CountWords {
      */
     public long countNumbers(File file) throws Exception {
         Scanner scan = new Scanner(file);
-        int count = 0;
+        long count = 0;
         while (scan.hasNext()) {
             if (scan.hasNextInt()) {
                 count += scan.nextInt();
