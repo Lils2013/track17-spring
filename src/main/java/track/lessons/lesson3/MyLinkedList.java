@@ -37,18 +37,7 @@ public class MyLinkedList extends List implements Stack, Queue {
 
     @Override
     public int pop() {
-        if (head == null) {
-            throw new NoSuchElementException();
-        }
-        final int returnval = head.val;
-        head = head.prev;
-        if (head != null) {
-            head.next = null;
-        } else {
-            tail = null;
-        }
-        counter--;
-        return returnval;
+        return remove(counter - 1);
     }
 
     @Override
@@ -58,28 +47,17 @@ public class MyLinkedList extends List implements Stack, Queue {
 
     @Override
     public int dequeue() {
-        if (head == null) {
-            throw new NoSuchElementException();
-        }
-        final int returnval = tail.val;
-        tail = tail.next;
-        if (tail != null) {
-            tail.prev = null;
-        } else {
-            head = null;
-        }
-        counter--;
-        return returnval;
+        return remove(0);
     }
 
     @Override
     void add(int item) {
         if (head == null) {
-            head = new Node(null,null,item);
+            head = new Node(null, null, item);
             tail = head;
             counter = 1;
         } else {
-            head.next = new Node(head,null,item);
+            head.next = new Node(head, null, item);
             head = head.next;
             counter++;
         }
@@ -87,37 +65,44 @@ public class MyLinkedList extends List implements Stack, Queue {
 
     @Override
     int remove(int idx) throws NoSuchElementException {
+        Node current = null;
         if (idx >= counter || idx < 0) {
             throw new NoSuchElementException();
-        } else {
-            Node current = tail;
+        } else if (idx < 0.5 * counter) {
+            current = tail;
             for (int i = 0; i < idx; i++) {
                 current = current.next;
             }
-            final int returnval = current.val;
-            if (current.prev != null) {
-                current.prev.next = current.next;
-            } else {
-                tail = current.next;
-                if (tail != null) {
-                    tail.prev = null;
-                } else {
-                    head = null;
-                }
+        } else {
+            current = head;
+            for (int i = 0; i < counter - idx - 1; i++) {
+                current = current.prev;
             }
-            if (current.next != null) {
-                current.next.prev = current.prev;
-            } else {
-                head = current.prev;
-                if (head != null) {
-                    head.next = null;
-                } else {
-                    tail = null;
-                }
-            }
-            counter--;
-            return returnval;
         }
+        final int returnval = current.val;
+        if (current.prev != null) {
+            current.prev.next = current.next;
+        } else {
+            tail = current.next;
+            if (tail != null) {
+                tail.prev = null;
+            } else {
+                head = null;
+            }
+        }
+        if (current.next != null) {
+            current.next.prev = current.prev;
+        } else {
+            head = current.prev;
+            if (head != null) {
+                head.next = null;
+            } else {
+                tail = null;
+            }
+        }
+        counter--;
+        return returnval;
+
     }
 
     @Override
