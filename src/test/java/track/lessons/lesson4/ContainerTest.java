@@ -19,6 +19,7 @@ import java.util.List;
 public class ContainerTest {
 
     private static Container container;
+
     @BeforeClass
     public static void init() throws InvalidConfigurationException {
         ConfigReader reader = new JsonConfigReader();

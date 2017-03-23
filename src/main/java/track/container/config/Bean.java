@@ -22,6 +22,7 @@ public class Bean {
     public Bean() {
 
     }
+
     public Bean(String id, String className, Map<String, Property> properties) {
         this.id = id;
         this.className = className;

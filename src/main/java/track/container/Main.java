@@ -10,6 +10,7 @@ import track.container.config.InvalidConfigurationException;
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  *
@@ -43,11 +44,14 @@ public class Main {
         System.out.println(engine);
         Car car = (Car) container.getById("carBean");
         System.out.println(car);
+        System.out.println(container.getMapByName());
+        System.out.println(container.getMapByClass());
 //        Gear gear1 = (Gear) container.getByClass("track.container.beans.Gear");
 //        System.out.println(gear1);
-//        Engine engine1 = (Engine) container.getByClass("track.container.beans.Engine");
-//        System.out.println(engine1);
+ //       Engine engine1 = (Engine) container.getByClass("track.container.beans.Engine");
+  //      System.out.println(engine1);
         Car car1 = (Car) container.getByClass("track.container.beans.Car");
-        System.out.println(car1.getEngine());
+        System.out.println(car1.getEngine().getPower() + 45);
+        System.out.println(container.getMapByClass());
     }
 }
