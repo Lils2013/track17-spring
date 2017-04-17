@@ -1,4 +1,4 @@
-package track.container.config;
+package messenger.container;
 
 import java.util.Map;
 
@@ -7,24 +7,12 @@ import java.util.Map;
  */
 public class Bean {
 
-    private String id; // Уникальный ID бина
+    private String name; // Уникально имя бина
     private String className; // Класс бина
-
-    /*
-    Встроенная структура данных Java - ассоциативная таблица
-    С помощью неё можно хранить данные типа Ключ-Значение
-    доступны операции
-    put(key, value) - поместить значение с заданным ключом
-    get(key) - получить значение по ключу (или null, если не найдено)
-     */
     private Map<String, Property> properties; // Набор полей бина ИмяПоля-Значение
 
-    public Bean() {
-
-    }
-
-    public Bean(String id, String className, Map<String, Property> properties) {
-        this.id = id;
+    public Bean(String name, String className, Map<String, Property> properties) {
+        this.name = name;
         this.className = className;
         this.properties = properties;
     }
@@ -37,12 +25,12 @@ public class Bean {
         this.properties = properties;
     }
 
-    public String getId() {
-        return id;
+    public String getName() {
+        return name;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getClassName() {
@@ -56,7 +44,7 @@ public class Bean {
     @Override
     public String toString() {
         return "Bean{" +
-                "id='" + id + '\'' +
+                "name='" + name + '\'' +
                 ", className='" + className + '\'' +
                 ", properties=" + properties +
                 '}';

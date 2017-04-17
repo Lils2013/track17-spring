@@ -1,0 +1,15 @@
+2017-04-16 02:08:11 INFO  Client:87 - Starting listener thread...
+2017-04-16 02:08:21 INFO  StringProtocol:22 - decoded: MSG_TEXT;null;lul;
+2017-04-16 02:08:21 INFO  Client:114 - Message received: TextMessage{text='lul'}
+2017-04-16 02:09:22 INFO  Client:123 - Tokens: [/text, fhhj]
+2017-04-16 02:09:22 INFO  Client:151 - TextMessage{text='fhhj'}
+2017-04-16 02:09:22 INFO  StringProtocol:53 - encoded: MSG_TEXT;null;fhhj;
+2:08:21 INFO  Server:98 - lul
+2017-04-16 02:02017-04-16 02:09:23 INFO  StringProtocol:22 - decoded: MSG_TEXT;null;fhhj;
+2017-04-16 02:09:23 INFO  Client:114 - Message received: TextMessage{text='fhhj'}
+1 - Message received: TextMessage{text='lul'}
+2017-04-16 02:09:23 INFO  StringProtocol:22 - decoded: MSG_TEXT;null;fhhj;
+2017-04-16 02:09:23 INFO  Server:98 - fhhj
+2017-04-16 02:09:23 INFO  Server:101 - TextMessage{text='fhhj'}
+2017-04-16 02:09:23 INFO  StringProtocol:53 - encoded: MSG_TEXT;null;fhhj;
+2017-04-16 02:09:23 INFO  Server:111 - Message received: TextMessage{text='fhhj'}

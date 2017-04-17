@@ -1,0 +1,11 @@
+<root>
+
+    <bean id="protocol" class="messenger.core.net.StringProtocol"/>
+
+    <bean id="client" class="messenger.client.Client">
+        <property name="port" val="19000"/>
+        <property name="host" val="localhost"/>
+        <property name="protocol" ref="protocol"/>
+    </bean>
+
+</root>

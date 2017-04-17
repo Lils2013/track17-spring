@@ -1,0 +1,29 @@
+{
+  "beans": [
+    {
+      "id": "protocol",
+      "className": "messenger.core.net.StringProtocol"
+    },
+    {
+      "id": "client",
+      "className": "messenger.client.Client",
+      "properties": {
+        "port": {
+          "name": "port",
+          "value": 19000,
+          "type": "VAL"
+        },
+        "host": {
+          "name": "host",
+          "value": "localhost",
+          "type": "VAL"
+        },
+        "protocol": {
+          "name": "protocol",
+          "value": "protocol",
+          "type": "REF"
+        }
+      }
+    }
+  ]
+}

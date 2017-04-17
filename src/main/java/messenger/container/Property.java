@@ -1,4 +1,4 @@
-package track.container.config;
+package messenger.container;
 
 /**
  * Описание тега property в xml конфигурации.
@@ -8,9 +8,6 @@ public class Property {
     private String name; // Имя поля
     private String value; // Значение поля
     private ValueType type; // Метка ссылочное значение или примитив
-
-    public Property() {
-    }
 
     public Property(String name, String value, ValueType type) {
         this.name = name;

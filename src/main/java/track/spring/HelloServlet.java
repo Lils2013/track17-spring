@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 Сервлет зарегистрирован в web.xml
 
 <servlet-name>rest</servlet-name>
-<servlet-class>arhangel.dim.HelloServlet</servlet-class>
+<servlet-class>messenger.HelloServlet</servlet-class>
 
 RUN:
 $mvn jetty:run
