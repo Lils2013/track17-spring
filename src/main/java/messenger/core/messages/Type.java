@@ -5,6 +5,7 @@ package messenger.core.messages;
  */
 public enum Type {
     MSG_LOGIN, // status
+    MSG_LOGOUT, // status
     MSG_TEXT, // status
     MSG_INFO, // MSG_INFO_RESULT
     MSG_CHAT_LIST, // MSG_CHAT_LIST_RESULT,

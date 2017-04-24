@@ -1,6 +1,9 @@
 package messenger.core.messages;
 
+import messenger.core.net.ProtocolException;
 import messenger.core.net.Session;
+
+import java.io.IOException;
 
 // TODO: на каждое сообщение завести обработчик-команду
 public interface Command {

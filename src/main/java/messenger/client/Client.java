@@ -1,22 +1,17 @@
 package messenger.client;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.Socket;
 import java.util.Arrays;
 import java.util.Scanner;
 
+import messenger.core.messages.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import track.container.Container;
 import track.container.JsonConfigReader;
 import track.container.config.InvalidConfigurationException;
-import messenger.core.messages.Message;
-import messenger.core.messages.TextMessage;
-import messenger.core.messages.Type;
 import messenger.core.net.ConnectionHandler;
 import messenger.core.net.Protocol;
 import messenger.core.net.ProtocolException;
@@ -28,16 +23,16 @@ public class Client implements ConnectionHandler {
 
     /**
      * Механизм логирования позволяет более гибко управлять записью данных в лог (консоль, файл и тд)
-     * */
+     */
     static Logger log = LoggerFactory.getLogger(Client.class);
 
     /**
      * Протокол, хост и порт инициализируются из конфига
-     *
-     * */
+     */
     private Protocol protocol;
     private int port;
     private String host;
+    private boolean stop;
 
     /**
      * Тред "слушает" сокет на наличие входящих сообщений от сервера
@@ -49,6 +44,8 @@ public class Client implements ConnectionHandler {
      */
     private InputStream in;
     private OutputStream out;
+    private ObjectInputStream ois;
+    private ObjectOutputStream oos;
 
     public Protocol getProtocol() {
         return protocol;
@@ -76,33 +73,32 @@ public class Client implements ConnectionHandler {
 
     public void initSocket() throws IOException {
         Socket socket = new Socket(host, port);
-        in = socket.getInputStream();
-        out = socket.getOutputStream();
-
+        ois = new ObjectInputStream(socket.getInputStream());
+        oos = new ObjectOutputStream(socket.getOutputStream());
         /**
          * Инициализируем поток-слушатель. Синтаксис лямбды скрывает создание анонимного класса Runnable
          */
         socketThread = new Thread(() -> {
             final byte[] buf = new byte[1024 * 64];
             log.info("Starting listener thread...");
-            while (!Thread.currentThread().isInterrupted()) {
+            while (!Thread.currentThread().isInterrupted() && !stop) {
                 try {
-                    // Здесь поток блокируется на ожидании данных
-                    int read = in.read(buf);
-                    if (read > 0) {
-
-                        // По сети передается поток байт, его нужно раскодировать с помощью протокола
-                        Message msg = protocol.decode(Arrays.copyOf(buf, read));
-                        onMessage(msg);
-                    }
+                    // По сети передается поток байт, его нужно раскодировать с помощью протокола
+                    Message msg = (Message) ois.readObject();
+                    onMessage(msg);
                 } catch (Exception e) {
                     log.error("Failed to process connection: {}", e);
                     e.printStackTrace();
-                    Thread.currentThread().interrupt();
                 }
             }
+            try {
+                socket.close();
+                ois.close();
+                oos.close();
+            } catch (IOException e) {
+                log.error("Failed to close connection: ", e);
+            }
         });
-
         socketThread.start();
     }
 
@@ -124,7 +120,16 @@ public class Client implements ConnectionHandler {
         String cmdType = tokens[0];
         switch (cmdType) {
             case "/login":
-                // TODO: реализация
+                LoginMessage loginMessage = new LoginMessage();
+                loginMessage.setType(Type.MSG_LOGIN);
+                loginMessage.setLogin(tokens[1]);
+                loginMessage.setPassword(tokens[2]);
+                send(loginMessage);
+                break;
+            case "/logout":
+                LogoutMessage logoutMessage = new LogoutMessage();
+                logoutMessage.setType(Type.MSG_LOGOUT);
+                send(logoutMessage);
                 break;
             case "/help":
                 // TODO: реализация
@@ -149,13 +154,13 @@ public class Client implements ConnectionHandler {
     @Override
     public void send(Message msg) throws IOException, ProtocolException {
         log.info(msg.toString());
-        out.write(protocol.encode(msg));
-        out.flush(); // принудительно проталкиваем буфер с данными
+        oos.writeObject(msg);
+        oos.flush(); // принудительно проталкиваем буфер с данными
     }
 
     @Override
     public void close() {
-        // TODO: написать реализацию. Закройте ресурсы и остановите поток-слушатель
+        stop = true;
     }
 
     public static void main(String[] args) throws Exception {
@@ -178,12 +183,13 @@ public class Client implements ConnectionHandler {
             System.out.println("$");
             while (true) {
                 String input = scanner.nextLine();
-                if ("q".equals(input)) {
+                if ("/logout".equals(input)) {
+                    client.processInput(input);
                     return;
                 }
                 try {
                     client.processInput(input);
-                } catch (ProtocolException | IOException e) {
+                } catch (ProtocolException | IOException | ArrayIndexOutOfBoundsException e) {
                     log.error("Failed to process user input", e);
                 }
             }

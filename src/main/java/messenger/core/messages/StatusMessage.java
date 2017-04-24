@@ -5,15 +5,15 @@ import java.util.Objects;
 /**
  * Простое текстовое сообщение
  */
-public class TextMessage extends Message {
-    private String text;
+public class StatusMessage extends Message {
+    private String status;
 
-    public String getText() {
-        return text;
+    public String getStatus() {
+        return status;
     }
 
-    public void setText(String text) {
-        this.text = text;
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     @Override
@@ -27,19 +27,19 @@ public class TextMessage extends Message {
         if (!super.equals(other)) {
             return false;
         }
-        TextMessage message = (TextMessage) other;
-        return Objects.equals(text, message.text);
+        StatusMessage message = (StatusMessage) other;
+        return Objects.equals(status, message.status);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), text);
+        return Objects.hash(super.hashCode(), status);
     }
 
     @Override
     public String toString() {
-        return "TextMessage{" +
-                "text='" + text + '\'' +
+        return "StatusMessage{" +
+                "status='" + status + '\'' +
                 '}';
     }
 }

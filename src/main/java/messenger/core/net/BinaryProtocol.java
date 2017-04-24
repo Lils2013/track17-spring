@@ -7,6 +7,8 @@ import messenger.core.messages.Message;
  */
 public class BinaryProtocol implements Protocol {
 
+
+
     @Override
     public Message decode(byte[] bytes) throws ProtocolException {
         return null;

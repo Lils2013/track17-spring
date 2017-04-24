@@ -5,16 +5,9 @@ import java.util.Objects;
 /**
  * Простое текстовое сообщение
  */
-public class TextMessage extends Message {
-    private String text;
-
-    public String getText() {
-        return text;
-    }
-
-    public void setText(String text) {
-        this.text = text;
-    }
+public class LoginMessage extends Message {
+    private String login;
+    private String password;
 
     @Override
     public boolean equals(Object other) {
@@ -27,19 +20,35 @@ public class TextMessage extends Message {
         if (!super.equals(other)) {
             return false;
         }
-        TextMessage message = (TextMessage) other;
-        return Objects.equals(text, message.text);
+        LoginMessage message = (LoginMessage) other;
+        return Objects.equals(login, message.login) && (Objects.equals(password, message.password));
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), text);
+        return Objects.hash(super.hashCode(), login);
     }
 
     @Override
     public String toString() {
-        return "TextMessage{" +
-                "text='" + text + '\'' +
+        return "LoginMessage{" +
+                "login='" + login + '\'' +
                 '}';
+    }
+
+    public String getLogin() {
+        return login;
+    }
+
+    public void setLogin(String login) {
+        this.login = login;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }
