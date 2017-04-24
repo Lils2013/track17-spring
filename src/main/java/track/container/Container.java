@@ -51,11 +51,13 @@ public class Container {
                 if (object == null) {
                     Class<?> cls = Class.forName(bean.getClassName());
                     object = (Object) cls.newInstance();
-                    for (Map.Entry<String, Property> entry : bean.getProperties().entrySet()) {
-                        if (entry.getValue().getType() == VAL) {
-                            parseValue(entry, cls, object);
-                        } else if (entry.getValue().getType() == REF) {
-                            parseRef(bean, entry, cls, object);
+                    if (bean.getProperties() != null) {
+                        for (Map.Entry<String, Property> entry : bean.getProperties().entrySet()) {
+                            if (entry.getValue().getType() == VAL) {
+                                parseValue(entry, cls, object);
+                            } else if (entry.getValue().getType() == REF) {
+                                parseRef(bean, entry, cls, object);
+                            }
                         }
                     }
                     objByName.put(id, object);
@@ -80,11 +82,13 @@ public class Container {
                 if (object == null) {
                     Class<?> cls = Class.forName(bean.getClassName());
                     object = (Object) cls.newInstance();
-                    for (Map.Entry<String, Property> entry : bean.getProperties().entrySet()) {
-                        if (entry.getValue().getType() == VAL) {
-                            parseValue(entry, cls, object);
-                        } else if (entry.getValue().getType() == REF) {
-                            parseRef(bean, entry, cls, object);
+                    if (bean.getProperties() != null) {
+                        for (Map.Entry<String, Property> entry : bean.getProperties().entrySet()) {
+                            if (entry.getValue().getType() == VAL) {
+                                parseValue(entry, cls, object);
+                            } else if (entry.getValue().getType() == REF) {
+                                parseRef(bean, entry, cls, object);
+                            }
                         }
                     }
                     objByClassName.put(clsName, object);
@@ -105,20 +109,28 @@ public class Container {
             String objId1 = bean1.getId();
             if (objId1.equals(id1)) {
                 cls1 = Class.forName(bean1.getClassName());
-                for (Map.Entry<String, Property> entry1 : bean.getProperties().entrySet()) {
-                    if (entry1.getValue().getType() == REF &&
-                            entry1.getValue().getValue().equals(bean.getId())) {
-                        throw new CyclicReferenceException();
+                if (bean.getProperties() != null) {
+                    for (Map.Entry<String, Property> entry1 : bean.getProperties().entrySet()) {
+                        if (entry1.getValue().getType() == REF &&
+                                entry1.getValue().getValue().equals(bean.getId())) {
+                            throw new CyclicReferenceException();
+                        }
                     }
                 }
                 object1 = getById(objId1);
             }
         }
         arg[0] = cls1;
-        Method method1 = cls.getDeclaredMethod("set" +
-                entry.getValue().getName().substring(0, 1).toUpperCase() +
-                entry.getValue().getName().substring(1), arg);
-        method1.invoke(object, object1);
+        Method[] methods = cls.getMethods();
+        Method method = null;
+        for (int i = 0; i < methods.length; i++) {
+            if (methods[i].getName().equals("set" +
+                    entry.getValue().getName().substring(0, 1).toUpperCase() +
+                    entry.getValue().getName().substring(1))) {
+                method = methods[i];
+            }
+        }
+        method.invoke(object, object1);
     }
 
     private void parseValue(Map.Entry<String, Property> entry, Class<?> cls, Object object) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
@@ -136,9 +148,15 @@ public class Container {
                 arg[0] = String.class;
             }
         }
-        Method method = cls.getDeclaredMethod("set" +
-                entry.getValue().getName().substring(0, 1).toUpperCase() +
-                entry.getValue().getName().substring(1), arg);
+        Method[] methods = cls.getMethods();
+        Method method = null;
+        for (int i = 0; i < methods.length; i++) {
+            if (methods[i].getName().equals("set" +
+                    entry.getValue().getName().substring(0, 1).toUpperCase() +
+                    entry.getValue().getName().substring(1))) {
+                method = methods[i];
+            }
+        }
         method.invoke(object, value);
     }
 }
