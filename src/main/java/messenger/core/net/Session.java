@@ -15,7 +15,7 @@ import org.slf4j.LoggerFactory;
 public class Session implements Runnable {
     static Logger log = LoggerFactory.getLogger(Session.class);
     private boolean stop;
-
+    public static final String PATH_TO_DB = "/home/alexander/java/track17-spring/messenger.sqlite";
     private User user;
     private Socket socket;
     private Protocol protocol;
@@ -71,7 +71,8 @@ public class Session implements Runnable {
     @Override
     public void run() {
         stop = false;
-        CommandSwitch executor = new CommandSwitch(new TextCommand(),new LoginCommand(),new LogoutCommand(), new UnknownCommand());
+        CommandSwitch executor = new CommandSwitch(new TextCommand(),
+                new LoginCommand(),new LogoutCommand(), new UnknownCommand());
         Server.sessions.add(this);
         while (!Thread.currentThread().isInterrupted() && !stop) {
             try {
@@ -86,7 +87,7 @@ public class Session implements Runnable {
                 } else {
                     executor.unknown(this,msg);
                 }
-            } catch (IOException| ClassNotFoundException | CommandException e) {
+            } catch (IOException | ClassNotFoundException | CommandException e) {
                 stop = true;
                 log.error("Failed to transfer data: ", e);
             }

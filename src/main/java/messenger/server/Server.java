@@ -2,9 +2,7 @@ package messenger.server;
 
 import messenger.client.Client;
 import messenger.core.User;
-import messenger.core.messages.Message;
-import messenger.core.messages.TextMessage;
-import messenger.core.messages.Type;
+import messenger.core.messages.*;
 import messenger.core.net.Protocol;
 import messenger.core.net.ProtocolException;
 import messenger.core.net.Session;
@@ -28,8 +26,9 @@ public class Server {
     public static final int DEFAULT_MAX_CONNECT = 2;
     public static Logger log = LoggerFactory.getLogger(Server.class);
     public static List<Session> sessions;
-    public static Map<String,String> loginInfo;
+    public static Map<String, String> loginInfo;
     public static long id;
+    public static CommandSwitch commandSwitch;
 
     // Засетить из конфига
     private int port;
@@ -64,9 +63,12 @@ public class Server {
         }
         Server.sessions = new ArrayList<>();
         Server.loginInfo = new HashMap<>();
-        loginInfo.put("lol","lul");
+        Server.commandSwitch = new CommandSwitch(new TextCommand(),
+                new LoginCommand(), new LogoutCommand(), new UnknownCommand());
+        loginInfo.put("lol", "lul");
         ExecutorService executor = Executors.newFixedThreadPool(DEFAULT_MAX_CONNECT);
         System.out.println("Listening");
+
         while (true) {
             Socket sock = null;
             try {
