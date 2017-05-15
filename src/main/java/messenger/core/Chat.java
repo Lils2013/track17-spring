@@ -5,4 +5,5 @@ package messenger.core;
  */
 public class Chat {
     private Long id;
+
 }

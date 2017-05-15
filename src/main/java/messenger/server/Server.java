@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.sql.*;
 import java.util.*;
 
 import java.util.concurrent.ExecutorService;
@@ -34,6 +35,7 @@ public class Server {
     private int port;
     private Protocol protocol;
     private int maxConnection = DEFAULT_MAX_CONNECT;
+    public static final String PATH_TO_DB = "/home/alexander/java/track17-spring/messenger.sqlite";
 
     public Protocol getProtocol() {
         return protocol;
@@ -52,7 +54,7 @@ public class Server {
     }
 
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws SQLException {
         Server server = new Server();
         server.setPort(19000);
         ServerSocket ssock = null;
@@ -64,7 +66,7 @@ public class Server {
         Server.sessions = new ArrayList<>();
         Server.loginInfo = new HashMap<>();
         Server.commandSwitch = new CommandSwitch(new TextCommand(),
-                new LoginCommand(), new LogoutCommand(), new UnknownCommand());
+                new LoginCommand(), new LogoutCommand(), new UnknownCommand(), new InfoCommand());
         loginInfo.put("lol", "lul");
         ExecutorService executor = Executors.newFixedThreadPool(DEFAULT_MAX_CONNECT);
         System.out.println("Listening");

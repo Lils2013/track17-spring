@@ -3,6 +3,8 @@ package messenger.core.net;
 import java.io.*;
 import java.net.Socket;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 import messenger.core.User;
@@ -71,21 +73,18 @@ public class Session implements Runnable {
     @Override
     public void run() {
         stop = false;
-        CommandSwitch executor = new CommandSwitch(new TextCommand(),
-                new LoginCommand(),new LogoutCommand(), new UnknownCommand());
+        CommandSwitch executor = Server.commandSwitch;
         Server.sessions.add(this);
         while (!Thread.currentThread().isInterrupted() && !stop) {
             try {
                 Message msg = (Message) ois.readObject();
                 onMessage(msg);
-                if (msg.getType().equals(Type.MSG_TEXT)) {
-                    executor.text(this,msg);
-                } else if (msg.getType().equals(Type.MSG_LOGIN)) {
-                    executor.login(this,msg);
-                } else if (msg.getType().equals(Type.MSG_LOGOUT)) {
-                    executor.logout(this,msg);
-                } else {
+                Map<Type, Command> map = executor.getMap();
+                Command command = map.get(msg.getType());
+                if (command == null) {
                     executor.unknown(this,msg);
+                } else {
+                    command.execute(this,msg);
                 }
             } catch (IOException | ClassNotFoundException | CommandException e) {
                 stop = true;

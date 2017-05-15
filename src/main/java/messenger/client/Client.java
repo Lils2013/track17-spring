@@ -131,6 +131,16 @@ public class Client implements ConnectionHandler {
                 logoutMessage.setType(Type.MSG_LOGOUT);
                 send(logoutMessage);
                 break;
+            case "/info":
+                InfoMessage infoMessage = new InfoMessage();
+                infoMessage.setType(Type.MSG_INFO);
+                if (tokens.length == 1) {
+                    infoMessage.setUserId(0);
+                } else if (tokens.length == 2) {
+                    infoMessage.setUserId(Integer.parseInt(tokens[1]));
+                }
+                send(infoMessage);
+                break;
             case "/help":
                 // TODO: реализация
                 break;
