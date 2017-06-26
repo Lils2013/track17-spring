@@ -18,13 +18,13 @@ public class TextCommand implements Command {
             if (session.getUser() == null) {
                 status.setStatus("you need to log in");
             } else {
-                if (MessageStoreImpl.getChatsByUserId(session.getUser().getId())
+                if (MessageStoreImpl.MESSAGESTORE.getChatsByUserId(session.getUser().getId())
                         .contains(text.getChatId())) {
                     text.setSenderId(session.getUser().getId());
-                    MessageStoreImpl.addMessage(text.getChatId(),text);
+                    MessageStoreImpl.MESSAGESTORE.addMessage(text.getChatId(),text);
                     for (Session sess : Server.sessions) {
                         if (sess.getSocket() != session.getSocket()) {
-                            if (MessageStoreImpl.getChatsByUserId(sess.getUser().getId())
+                            if (MessageStoreImpl.MESSAGESTORE.getChatsByUserId(sess.getUser().getId())
                                     .contains(text.getChatId())) {
                                 sess.send(text);
                             }

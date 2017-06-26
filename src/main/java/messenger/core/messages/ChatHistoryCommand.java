@@ -20,9 +20,9 @@ public class ChatHistoryCommand implements Command {
         if (session.getUser() == null) {
             status.setStatus("you need to log in");
         } else {
-            if (MessageStoreImpl.getChatsByUserId(session.getUser().getId()).contains(hist.getChatId())) {
+            if (MessageStoreImpl.MESSAGESTORE.getChatsByUserId(session.getUser().getId()).contains(hist.getChatId())) {
                 status.setStatus("success");
-                chatHistoryResultMessage.setHist(MessageStoreImpl.getMessagesFromChat(hist.getChatId()));
+                chatHistoryResultMessage.setHist(MessageStoreImpl.MESSAGESTORE.getMessagesFromChat(hist.getChatId()));
                 try {
                     session.send(chatHistoryResultMessage);
                 } catch (IOException e) {

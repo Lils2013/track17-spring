@@ -23,7 +23,7 @@ public class LoginCommand implements Command {
         LoginMessage login = (LoginMessage) message;
         Server.log.info(login.getLogin() + " is trying to login");
         try {
-            User result = UserStoreImpl.getUser(login.getLogin(),login.getPassword());
+            User result = UserStoreImpl.USERSTORE.getUser(login.getLogin(),login.getPassword());
             if (result == null) {
                 status.setStatus("failed to login");
             } else {

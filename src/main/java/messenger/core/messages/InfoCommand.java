@@ -31,8 +31,7 @@ public class InfoCommand implements Command {
                     throw new CommandException(e);
                 }
             } else {
-                UserStoreImpl userStore = new UserStoreImpl();
-                User user = userStore.getUserById(infoMessage.getUserId());
+                User user = UserStoreImpl.USERSTORE.getUserById(infoMessage.getUserId());
                 if (user == null) {
                     status.setStatus("no such user exists");
 

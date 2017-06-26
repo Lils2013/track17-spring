@@ -4,6 +4,7 @@ import messenger.core.User;
 import messenger.core.messages.Message;
 import messenger.core.net.Session;
 import messenger.server.Server;
+import track.lessons.lesson9.DbManager;
 import track.util.Util;
 
 import java.sql.*;
@@ -15,13 +16,23 @@ import java.util.List;
  */
 public class MessageStoreImpl {
 
-    public static List<Long> getChatsByUserId(Long userId) {
+    public static final MessageStoreImpl MESSAGESTORE = new MessageStoreImpl();
+    private DbManager dbManager;
+
+    public MessageStoreImpl() {
+    }
+
+    public void setDbManager(DbManager dbManager) {
+        this.dbManager = dbManager;
+    }
+
+    public List<Long> getChatsByUserId(Long userId) {
         final String sql = "SELECT * FROM chat_membership WHERE user_id = \'" + userId + "\';";
         Statement stmt = null;
         ResultSet rs = null;
         List<Long> list = new LinkedList<>();
         try {
-            Connection connection = DriverManager.getConnection("jdbc:sqlite:" + Session.PATH_TO_DB);
+            Connection connection = dbManager.getConnection();
             stmt = connection.createStatement();
             rs = stmt.executeQuery(sql);
             while (rs.next()) {
@@ -29,7 +40,6 @@ public class MessageStoreImpl {
                 Long id = (long) rs.getInt("chat_id");
                 list.add(id);
             }
-            connection.close();
         } catch (SQLException e) {
             Server.log.error("Failed to execute statement: " + sql, e);
         } finally {
@@ -38,13 +48,13 @@ public class MessageStoreImpl {
         return list;
     }
 
-    public static long chatCreate(long[] ids, long admin) {
+    public long chatCreate(long[] ids, long admin) {
         Statement stmt = null;
         ResultSet rs = null;
         String sql = null;
         long lastRowId = 0;
         try {
-            Connection connection = DriverManager.getConnection("jdbc:sqlite:" + Session.PATH_TO_DB);
+            Connection connection = dbManager.getConnection();
             connection.setAutoCommit(false);
             stmt = connection.createStatement();
             sql = "INSERT INTO chat (admin_id) VALUES (" + admin + ");";
@@ -70,7 +80,7 @@ public class MessageStoreImpl {
                 }
             }
             connection.commit();
-            connection.close();
+            connection.setAutoCommit(true);
         } catch (SQLException e) {
             Server.log.error("Failed to execute statement: " + sql, e);
         } finally {
@@ -79,7 +89,7 @@ public class MessageStoreImpl {
         return lastRowId;
     }
 
-    public static long chatCreate(long id, long admin) {
+    public long chatCreate(long id, long admin) {
         Statement stmt = null;
         ResultSet rs = null;
         String sql = null;
@@ -88,7 +98,7 @@ public class MessageStoreImpl {
             return lastRowId;
         }
         try {
-            Connection connection = DriverManager.getConnection("jdbc:sqlite:" + Session.PATH_TO_DB);
+            Connection connection = dbManager.getConnection();
             connection.setAutoCommit(false);
             stmt = connection.createStatement();
             rs = stmt.executeQuery("SELECT chat_id FROM chat_membership WHERE chat_id IN " +
@@ -113,7 +123,7 @@ public class MessageStoreImpl {
                 stmt.executeUpdate(sql);
             }
             connection.commit();
-            connection.close();
+            connection.setAutoCommit(true);
         } catch (SQLException e) {
             Server.log.error("Failed to execute statement: " + sql, e);
         } finally {
@@ -122,19 +132,19 @@ public class MessageStoreImpl {
         return lastRowId;
     }
 
-    public static void addMessage(Long chatId, Message message) {
+    public void addMessage(Long chatId, Message message) {
         Statement stmt = null;
         ResultSet rs = null;
         String sql = null;
         try {
-            Connection connection = DriverManager.getConnection("jdbc:sqlite:" + Session.PATH_TO_DB);
+            Connection connection = dbManager.getConnection();
             connection.setAutoCommit(false);
             stmt = connection.createStatement();
             sql = "INSERT INTO messages (sender_id, chat_id, mes_text) VALUES (" +
                     message.getSenderId() + ", " + chatId + ", '" + message.toString() + "');";
             stmt.executeUpdate(sql);
             connection.commit();
-            connection.close();
+            connection.setAutoCommit(true);
         } catch (SQLException e) {
             Server.log.error("Failed to execute statement: " + sql, e);
         } finally {
@@ -142,13 +152,13 @@ public class MessageStoreImpl {
         }
     }
 
-    public static List<String> getMessagesFromChat(Long chatId) {
+    public List<String> getMessagesFromChat(Long chatId) {
         final String sql = "SELECT * FROM messages WHERE chat_id = \'" + chatId + "\';";
         Statement stmt = null;
         ResultSet rs = null;
         List<String> result = new LinkedList<>();
         try {
-            Connection connection = DriverManager.getConnection("jdbc:sqlite:" + Session.PATH_TO_DB);
+            Connection connection = dbManager.getConnection();
             stmt = connection.createStatement();
             rs = stmt.executeQuery(sql);
             while (rs.next()) {
@@ -160,7 +170,6 @@ public class MessageStoreImpl {
                         rs.getString("mes_text"));
 
             }
-            connection.close();
         } catch (SQLException e) {
             Server.log.error("Failed to execute statement: " + sql, e);
         } finally {
