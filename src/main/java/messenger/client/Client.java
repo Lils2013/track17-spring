@@ -126,6 +126,13 @@ public class Client implements ConnectionHandler {
                 loginMessage.setPassword(tokens[2]);
                 send(loginMessage);
                 break;
+            case "/register":
+                RegisterMessage registerMessage = new RegisterMessage();
+                registerMessage.setType(Type.MSG_REGISTER);
+                registerMessage.setLogin(tokens[1]);
+                registerMessage.setPassword(tokens[2]);
+                send(registerMessage);
+                break;
             case "/logout":
                 LogoutMessage logoutMessage = new LogoutMessage();
                 logoutMessage.setType(Type.MSG_LOGOUT);
@@ -141,17 +148,38 @@ public class Client implements ConnectionHandler {
                 }
                 send(infoMessage);
                 break;
-            case "/help":
-                // TODO: реализация
+            case "/chat_list":
+                ChatListMessage chatListMessage = new ChatListMessage();
+                chatListMessage.setType(Type.MSG_CHAT_LIST);
+                send(chatListMessage);
+                break;
+            case "/chat_history":
+                ChatHistoryMessage chatHistoryMessage = new ChatHistoryMessage();
+                chatHistoryMessage.setType(Type.MSG_CHAT_HIST);
+                chatHistoryMessage.setChatId(Long.parseLong(tokens[1]));
+                send(chatHistoryMessage);
+                break;
+            case "/chat_create":
+                ChatCreateMessage chatCreateMessage = new ChatCreateMessage();
+                chatCreateMessage.setType(Type.MSG_CHAT_CREATE);
+                long[] arr = new long[tokens.length - 1];
+                for (int i = 1; i < tokens.length; i++) {
+                    arr[i - 1] = Long.parseLong(tokens[i]);
+                }
+                chatCreateMessage.setIds(arr);
+                send(chatCreateMessage);
                 break;
             case "/text":
-                // FIXME: пример реализации для простого текстового сообщения
                 TextMessage sendMessage = new TextMessage();
                 sendMessage.setType(Type.MSG_TEXT);
-                sendMessage.setText(tokens[1]);
+                sendMessage.setChatId(Long.parseLong(tokens[1]));
+                String text = "";
+                for (int i = 2; i < tokens.length; i++) {
+                    text += tokens[i] + " ";
+                }
+                sendMessage.setText(text);
                 send(sendMessage);
                 break;
-            // TODO: implement another types from wiki
 
             default:
                 log.error("Invalid input: " + line);

@@ -24,7 +24,7 @@ import java.util.concurrent.Executors;
  */
 public class Server {
 
-    public static final int DEFAULT_MAX_CONNECT = 2;
+    public static final int DEFAULT_MAX_CONNECT = 4;
     public static Logger log = LoggerFactory.getLogger(Server.class);
     public static List<Session> sessions;
     public static Map<String, String> loginInfo;
@@ -66,7 +66,10 @@ public class Server {
         Server.sessions = new ArrayList<>();
         Server.loginInfo = new HashMap<>();
         Server.commandSwitch = new CommandSwitch(new TextCommand(),
-                new LoginCommand(), new LogoutCommand(), new UnknownCommand(), new InfoCommand());
+                new LoginCommand(), new LogoutCommand(), new UnknownCommand(),
+                new InfoCommand(), new ChatListCommand(), new ChatCreateCommand(),
+                new ChatHistoryCommand(), new RegisterCommand()
+        );
         loginInfo.put("lol", "lul");
         ExecutorService executor = Executors.newFixedThreadPool(DEFAULT_MAX_CONNECT);
         System.out.println("Listening");

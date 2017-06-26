@@ -17,24 +17,39 @@ public class CommandSwitch {
     private LogoutCommand logoutCommand;
     private UnknownCommand unknownCommand;
     private InfoCommand infoCommand;
+    private ChatListCommand chatListCommand;
+    private ChatCreateCommand chatCreateCommand;
+    private ChatHistoryCommand chatHistoryCommand;
+    private RegisterCommand registerCommand;
     public Map<Type, Command> map = new HashMap<>();
 
     public CommandSwitch(TextCommand textCommand, LoginCommand loginCommand, LogoutCommand logoutCommand,
-                         UnknownCommand unknownCommand, InfoCommand infoCommand) {
+                         UnknownCommand unknownCommand, InfoCommand infoCommand,
+                         ChatListCommand chatListCommand, ChatCreateCommand chatCreateCommand,
+                         ChatHistoryCommand chatHistoryCommand, RegisterCommand registerCommand) {
         this.textCommand = textCommand;
         this.loginCommand = loginCommand;
         this.logoutCommand = logoutCommand;
         this.infoCommand = infoCommand;
         this.unknownCommand = unknownCommand;
+        this.chatListCommand = chatListCommand;
+        this.chatCreateCommand = chatCreateCommand;
+        this.chatHistoryCommand = chatHistoryCommand;
+        this.registerCommand = registerCommand;
         map.put(Type.MSG_TEXT,this.textCommand);
         map.put(Type.MSG_LOGIN,this.loginCommand);
         map.put(Type.MSG_LOGOUT,this.logoutCommand);
         map.put(Type.MSG_INFO,this.infoCommand);
+        map.put(Type.MSG_CHAT_LIST,this.chatListCommand);
+        map.put(Type.MSG_CHAT_CREATE,this.chatCreateCommand);
+        map.put(Type.MSG_CHAT_HIST,this.chatHistoryCommand);
+        map.put(Type.MSG_REGISTER,this.registerCommand);
     }
 
     public Map<Type, Command> getMap() {
         return map;
     }
+
     public TextCommand getTextCommand() {
         return textCommand;
     }

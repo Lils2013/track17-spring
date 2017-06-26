@@ -5,8 +5,8 @@ import java.util.Objects;
 /**
  * Простое текстовое сообщение
  */
-public class TextMessage extends Message {
-    private String text;
+public class ChatHistoryMessage extends Message {
+
     private long chatId;
 
     public long getChatId() {
@@ -15,14 +15,6 @@ public class TextMessage extends Message {
 
     public void setChatId(long chatId) {
         this.chatId = chatId;
-    }
-
-    public String getText() {
-        return text;
-    }
-
-    public void setText(String text) {
-        this.text = text;
     }
 
     @Override
@@ -36,20 +28,19 @@ public class TextMessage extends Message {
         if (!super.equals(other)) {
             return false;
         }
-        TextMessage message = (TextMessage) other;
-        return Objects.equals(text, message.text) && (chatId == message.chatId);
+        ChatHistoryMessage message = (ChatHistoryMessage) other;
+        return Objects.equals(chatId, message.chatId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), text, chatId);
+        return Objects.hash(super.hashCode(), chatId);
     }
 
     @Override
     public String toString() {
-        return "TextMessage{" +
-                "text=" + text +
-                " chat=" + chatId +
-                "}";
+        return "ChatHistory message" +
+                "chatId='" + chatId + '\'' +
+                '}';
     }
 }

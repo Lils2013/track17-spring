@@ -14,7 +14,7 @@ import static messenger.core.net.Session.PATH_TO_DB;
 /**
  * Created by alexander on 14.05.17.
  */
-public class UserStoreImpl {
+public class UserStoreImpl  {
 
     private DbManager dbManager;
 
@@ -25,7 +25,7 @@ public class UserStoreImpl {
         this.dbManager = dbManager;
     }
 
-    public User getUser(String login, String pass) {
+    public static User getUser(String login, String pass) {
         final String sql = "SELECT * FROM user WHERE user.login = \'" + login + "\';";
         Statement stmt = null;
         ResultSet rs = null;
@@ -55,7 +55,7 @@ public class UserStoreImpl {
         return user;
     }
 
-    public User getUserById(Long id) {
+    public static User getUserById(Long id) {
         final String sql = "SELECT * FROM user WHERE user.id = \'" + id + "\';";
         Statement stmt = null;
         ResultSet rs = null;
@@ -76,5 +76,25 @@ public class UserStoreImpl {
             Util.closeQuietly(rs, stmt);
         }
         return user;
+    }
+
+    public static void addUser(String login, String pass) {
+        Statement stmt = null;
+        ResultSet rs = null;
+        String sql = null;
+        try {
+            Connection connection = DriverManager.getConnection("jdbc:sqlite:" + Session.PATH_TO_DB);
+            connection.setAutoCommit(false);
+            stmt = connection.createStatement();
+            sql = "INSERT INTO user (login, password) VALUES ('" +
+                    login + "', '" + pass + "');";
+            stmt.executeUpdate(sql);
+            connection.commit();
+            connection.close();
+        } catch (SQLException e) {
+            Server.log.error("Failed to execute statement: " + sql, e);
+        } finally {
+            Util.closeQuietly(rs, stmt);
+        }
     }
 }

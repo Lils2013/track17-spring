@@ -6,8 +6,6 @@ import messenger.core.store.UserStoreImpl;
 
 import java.io.IOException;
 
-import static messenger.core.messages.Type.MSG_INFO_RESULT;
-
 /**
  * Created by alexander on 14.05.17.
  */
@@ -19,7 +17,7 @@ public class InfoCommand implements Command {
         StatusMessage status = new StatusMessage();
         status.setType(Type.MSG_STATUS);
         InfoResultMessage infoResultMessage = new InfoResultMessage();
-        infoResultMessage.setType(MSG_INFO_RESULT);
+        infoResultMessage.setType(Type.MSG_INFO_RESULT);
         if (session.getUser() == null) {
             status.setStatus("you need to log in");
         } else {
@@ -30,7 +28,7 @@ public class InfoCommand implements Command {
                 try {
                     session.send(infoResultMessage);
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    throw new CommandException(e);
                 }
             } else {
                 UserStoreImpl userStore = new UserStoreImpl();
@@ -45,16 +43,15 @@ public class InfoCommand implements Command {
                     try {
                         session.send(infoResultMessage);
                     } catch (IOException e) {
-                        e.printStackTrace();
+                        throw new CommandException(e);
                     }
                 }
             }
-
         }
         try {
             session.send(status);
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new CommandException(e);
         }
     }
 }
