@@ -7,8 +7,11 @@ import messenger.core.net.Protocol;
 import messenger.core.net.ProtocolException;
 import messenger.core.net.Session;
 import messenger.core.net.StringProtocol;
+import messenger.core.store.MessageStoreImpl;
+import messenger.core.store.UserStoreImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import track.lessons.lesson9.DbManager;
 
 import java.io.*;
 import java.net.ServerSocket;
@@ -54,7 +57,7 @@ public class Server {
     }
 
 
-    public static void main(String[] args) throws SQLException {
+    public static void main(String[] args) throws Exception {
         Server server = new Server();
         server.setPort(19000);
         ServerSocket ssock = null;
@@ -70,8 +73,12 @@ public class Server {
                 new InfoCommand(), new ChatListCommand(), new ChatCreateCommand(),
                 new ChatHistoryCommand(), new RegisterCommand()
         );
-        loginInfo.put("lol", "lul");
         ExecutorService executor = Executors.newFixedThreadPool(DEFAULT_MAX_CONNECT);
+        DbManager dbManager = new DbManager();
+        dbManager.setUrl(Session.PATH_TO_DB);
+        dbManager.init();
+        MessageStoreImpl.MESSAGESTORE.setDbManager(dbManager);
+        UserStoreImpl.USERSTORE.setDbManager(dbManager);
         System.out.println("Listening");
 
         while (true) {

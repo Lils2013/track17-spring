@@ -19,7 +19,7 @@ public class ChatListCommand implements Command {
         if (session.getUser() == null) {
             status.setStatus("you need to log in");
         } else {
-            chatListResultMessage.setList(MessageStoreImpl.getChatsByUserId(session.getUser().getId()));
+            chatListResultMessage.setList(MessageStoreImpl.MESSAGESTORE.getChatsByUserId(session.getUser().getId()));
             status.setStatus("success");
             try {
                 session.send(chatListResultMessage);

@@ -16,6 +16,7 @@ import static messenger.core.net.Session.PATH_TO_DB;
  */
 public class UserStoreImpl  {
 
+    public static final UserStoreImpl USERSTORE = new UserStoreImpl();
     private DbManager dbManager;
 
     public UserStoreImpl() {
@@ -25,13 +26,14 @@ public class UserStoreImpl  {
         this.dbManager = dbManager;
     }
 
-    public static User getUser(String login, String pass) {
+    public User getUser(String login, String pass) {
         final String sql = "SELECT * FROM user WHERE user.login = \'" + login + "\';";
         Statement stmt = null;
         ResultSet rs = null;
         User user = null;
         try {
-            Connection connection = DriverManager.getConnection("jdbc:sqlite:" + Session.PATH_TO_DB);
+            Connection connection = dbManager.getConnection();
+                    //DriverManager.getConnection("jdbc:sqlite:" + Session.PATH_TO_DB);
             stmt = connection.createStatement();
             rs = stmt.executeQuery(sql);
             if (rs.next()) {
@@ -46,7 +48,6 @@ public class UserStoreImpl  {
                     user.setId(id);
                 }
             }
-            connection.close();
         } catch (SQLException e) {
             Server.log.error("Failed to execute statement: " + sql, e);
         } finally {
@@ -55,13 +56,13 @@ public class UserStoreImpl  {
         return user;
     }
 
-    public static User getUserById(Long id) {
+    public User getUserById(Long id) {
         final String sql = "SELECT * FROM user WHERE user.id = \'" + id + "\';";
         Statement stmt = null;
         ResultSet rs = null;
         User user = null;
         try {
-            Connection connection = DriverManager.getConnection("jdbc:sqlite:" + Session.PATH_TO_DB);
+            Connection connection = dbManager.getConnection();
             stmt = connection.createStatement();
             rs = stmt.executeQuery(sql);
             if (rs.next()) {
@@ -69,7 +70,6 @@ public class UserStoreImpl  {
                 user.setName(rs.getString("login"));
                 user.setId(id);
             }
-            connection.close();
         } catch (SQLException e) {
             Server.log.error("Failed to execute statement: " + sql, e);
         } finally {
@@ -78,19 +78,18 @@ public class UserStoreImpl  {
         return user;
     }
 
-    public static void addUser(String login, String pass) {
+    public void addUser(String login, String pass) {
         Statement stmt = null;
         ResultSet rs = null;
         String sql = null;
         try {
-            Connection connection = DriverManager.getConnection("jdbc:sqlite:" + Session.PATH_TO_DB);
+            Connection connection = dbManager.getConnection();
             connection.setAutoCommit(false);
             stmt = connection.createStatement();
             sql = "INSERT INTO user (login, password) VALUES ('" +
                     login + "', '" + pass + "');";
             stmt.executeUpdate(sql);
             connection.commit();
-            connection.close();
         } catch (SQLException e) {
             Server.log.error("Failed to execute statement: " + sql, e);
         } finally {

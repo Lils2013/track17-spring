@@ -21,10 +21,10 @@ public class ChatCreateCommand implements Command {
         } else {
             if (ids.length == 1) {
                 status.setStatus("chat id = " +
-                        MessageStoreImpl.chatCreate(ids[0],session.getUser().getId()));
+                        MessageStoreImpl.MESSAGESTORE.chatCreate(ids[0],session.getUser().getId()));
             } else {
                 status.setStatus("chat id = " +
-                        MessageStoreImpl.chatCreate(ids,session.getUser().getId()));
+                        MessageStoreImpl.MESSAGESTORE.chatCreate(ids,session.getUser().getId()));
             }
         }
         try {

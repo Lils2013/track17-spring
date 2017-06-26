@@ -19,9 +19,9 @@ public class RegisterCommand implements Command {
         RegisterMessage login = (RegisterMessage) message;
         Server.log.info(login.getLogin() + " is trying to register");
         try {
-            User result = UserStoreImpl.getUser(login.getLogin(),login.getPassword());
+            User result = UserStoreImpl.USERSTORE.getUser(login.getLogin(),login.getPassword());
             if (result == null) {
-                UserStoreImpl.addUser(login.getLogin(), login.getPassword());
+                UserStoreImpl.USERSTORE.addUser(login.getLogin(), login.getPassword());
                 status.setStatus("succesfully registered");
             } else {
                 status.setStatus("user exists");
