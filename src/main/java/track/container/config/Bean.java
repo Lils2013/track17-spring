@@ -19,6 +19,10 @@ public class Bean {
      */
     private Map<String, Property> properties; // Набор полей бина ИмяПоля-Значение
 
+    public Bean() {
+
+    }
+
     public Bean(String id, String className, Map<String, Property> properties) {
         this.id = id;
         this.className = className;
